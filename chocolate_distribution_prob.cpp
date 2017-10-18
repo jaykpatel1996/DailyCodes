@@ -1,3 +1,4 @@
+//http://www.geeksforgeeks.org/chocolate-distribution-problem/
 #include<stdio.h>
 #include<vector>
 #include<algorithm>
