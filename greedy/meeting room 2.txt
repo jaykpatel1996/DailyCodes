@@ -1,0 +1,70 @@
+https://leetcode.com/problems/meeting-rooms-ii/
+
+Code:
+
+struct Time
+{
+    int time;
+    bool IsComing; // false if departing
+    Time(int i,bool j)
+    {
+        time=i;
+        IsComing = j;
+    }
+};
+
+struct Comparator
+{
+    bool operator() (const Time &time1,const Time &time2)
+    {
+        if(time1.time<time2.time)
+            return true;
+          else if(time1.time==time2.time)
+          {
+              if(time1.IsComing==false && time2.IsComing==true)
+                  return true;
+              else if(time2.IsComing==false && time1.IsComing==true)
+                  return false;
+          }
+              return false;
+    }
+};
+
+class Solution {
+public:
+    int minMeetingRooms(vector<vector<int>>& intervals) {
+        
+        int tSize = (intervals.size() )* 2;
+        if(tSize==0)
+            return 0;
+        vector<Time> t;
+        for(int i=0;i<intervals.size();i++)
+        {
+            Time temp(intervals[i][0],true);
+            t.push_back(temp);
+            temp.time = intervals[i][1];
+            temp.IsComing = false;
+            t.push_back(temp);
+        }
+        sort(t.begin(),t.end(),Comparator());
+        
+        int global_max=0;
+        int count=0;
+        
+        for(int i=0;i<tSize;i++)
+        {
+            //cout<<t[i].time<<"\t"<<t[i].IsComing<<"\n";
+            if(t[i].IsComing)
+                count++;
+            else
+                count--;
+            
+            if(count>global_max)
+                global_max=count;
+            
+        }
+        
+        return global_max;
+        
+    }
+};
