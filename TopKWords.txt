@@ -1,0 +1,70 @@
+https://leetcode.com/problems/top-k-frequent-words/
+
+
+
+struct word
+{
+    int frequency;
+    string name;
+};
+
+struct Comparator
+{
+    bool operator() (const word &word1,const word &word2)
+    {
+        if(word1.frequency>word2.frequency)
+            return false;
+        else if(word1.frequency<word2.frequency)
+            return true;
+        else if(word1.name.compare(word2.name)>0)
+        {
+            return true;
+        }
+        else 
+            return false;
+            
+    }
+};
+
+class Solution {
+public:
+    vector<string> topKFrequent(vector<string>& words, int k) {
+        
+        int wordCount = words.size();
+        map<string,int> WordFreq;
+        for(int i=0;i<wordCount;i++)
+        {
+            if(WordFreq.find(words[i])==WordFreq.end())
+                WordFreq[words[i]]++;
+            else
+                WordFreq[words[i]]++;
+        }
+        vector<word> WordVec;
+        
+        map<string,int> :: iterator itr;
+        for(itr=WordFreq.begin();itr!=WordFreq.end();itr++)
+        {
+            word temp;
+            temp.name = (*itr).first;
+            temp.frequency = (*itr).second;
+            WordVec.push_back(temp);
+        }
+        //priority_queue<word, vector<word>, Comparator > pq(WordVec.begin(),WordVec.end());
+        sort(WordVec.begin(),WordVec.end(),Comparator());
+        
+        vector<string> res;
+        int i=WordVec.size()-1;
+        while(k)
+        {
+            /*auto t = pq.top();
+            res.push_back(t.name);
+            //cout<<t.name;
+            pq.pop();*/
+            res.push_back(WordVec[i].name);
+            k--;i--;
+        }
+      
+        return res;
+        
+    }
+};
