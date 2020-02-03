@@ -1,0 +1,40 @@
+//https://leetcode.com/problems/next-permutation
+
+class Solution {
+public:
+    void nextPermutation(vector<int>& nums) 
+    {
+        int size = nums.size();
+        int i;
+        for(i=size-1;i>0&&nums[i]<=nums[i-1];i--);
+        if(i==0)
+        {
+            reverse(nums.begin(),nums.end());
+            return;
+        }
+    
+        //swap the element
+        // search for next maximum element
+        i=i-1;
+        int j=i+1;
+        int maxElement = nums[j];
+        int maxIndex=j;
+        for(;j<size;j++)
+        {
+            if(nums[j]>nums[i]&&nums[j]<=maxElement)
+            {
+                maxElement = nums[j];
+                maxIndex = j;
+            }
+        }
+        
+        //
+        int temp=nums[maxIndex];
+        nums[maxIndex]=nums[i];
+        nums[i]=temp;
+        
+        reverse(nums.begin()+i+1,nums.end());
+        
+        
+    }
+};
