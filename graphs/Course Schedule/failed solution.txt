@@ -1,0 +1,83 @@
+//https://leetcode.com/problems/course-schedule
+
+//Learned alot through this failed solution. 
+
+class Solution {
+public:
+    
+    list<int>* CreateGraph(int n,vector<vector<int>>& prerequisites)
+    {
+        list<int> *adj = new list<int>[n];
+        for(int i=0;i<prerequisites.size();i++)
+        {
+            adj[prerequisites[i][0]].push_back(prerequisites[i][1]);
+        }
+        return adj;
+    }
+    
+    void dfs(vector<bool>& isVisited,vector<bool> &isStartIndex,list<int> *adj,int source)
+    {
+        if(isVisited[source]==true)
+        {
+            return;
+        }
+        isVisited[source]=true;
+        for(auto itr=adj[source].begin();itr!=adj[source].end();itr++)
+        {
+            isStartIndex[*itr]=true;
+            dfs(isVisited,isStartIndex,adj,*itr);
+        }
+        return;
+    }
+    
+    list<int> ComputeStartVertices(list<int> *adj,int n)
+    {
+     
+        vector<bool> isVisited(n,false);
+        vector<bool> isStartIndex(n,false);
+        dfs(isVisited,isStartIndex,adj,0);
+        list<int> res;
+        for(int i=0;i<n;i++)
+        {
+            if(isStartIndex[i]==false)
+                res.push_back(i);
+        }
+        return res;
+        
+        
+    }
+
+    
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) 
+    {
+        if(prerequisites.size()==0)
+            return true;
+        list<int> *adj = CreateGraph(numCourses,prerequisites);
+        list<int> startVertices = ComputeStartVertices(adj,numCourses);
+
+        
+        
+        if(startVertices.size()==0)
+            return false;
+        
+        vector<bool> isVisited(numCourses,false);
+        vector<bool> Dummy(numCourses,false);
+        
+        
+        
+        for(auto itr=startVertices.begin();itr!=startVertices.end();itr++)
+        {
+            dfs(isVisited,Dummy,adj,*itr);
+        }
+        
+        for(int i=0;i<numCourses;i++)
+        {
+            if(isVisited[i]==false)
+                return false;
+        }
+
+        return true;
+
+        
+    }
+};

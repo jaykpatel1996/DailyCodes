@@ -1,0 +1,83 @@
+//https://leetcode.com/problems/number-of-islands-ii/submissions/
+
+class Solution {
+public:
+    
+    pair<int,int> find(map<pair<int, int> ,pair<int,int> > &parent, pair<int,int> x)
+    {
+    if (parent[x].first == -1)  
+        return x;  
+    return find(parent, parent[x]);  
+    }
+    
+    bool Merge(pair<int,int> x, pair<int, int> y, map<pair<int, int> ,pair<int,int> > &parent)
+    {
+        bool res = false;
+    pair<int,int> xset = find(parent, x);  
+    pair<int,int> yset = find(parent, y); 
+    if(((xset.first) != (yset.first)) || ((xset.second)!=(yset.second))) 
+    {  
+        res=true;
+        parent[xset] = yset;  
+    }
+    return res;
+    }
+    
+    
+    
+    bool isSafe(int row,int col, int rowSize,int colSize)
+    {
+        if(row<0||row>rowSize-1||col<0||col>colSize-1)
+            return false;
+        return true;
+    }
+    
+    vector<int> numIslands2(int m, int n, vector<vector<int>>& positions) 
+    {
+        vector<vector<int> > Matrix(m,vector<int> (n,0));
+        vector<int> res;
+        
+        map<pair<int,int> , pair<int,int> > Parent;
+        
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                auto p = make_pair(i,j);
+                Parent[p] = make_pair(-1,-1);
+            }
+        }
+        
+        int NextRow[]={0,0,1,-1};
+        int NextCol[]={-1,1,0,0};
+        int count=0;
+        for(int i=0;i<positions.size();i++)
+        {
+            
+            int currRow=positions[i][0];
+            int currCol=positions[i][1];
+            if(Matrix[currRow][currCol]==1)
+            {res.push_back(count);
+                continue;}
+            Matrix[currRow][currCol]=1;
+            int flag=0;
+            count++;
+            for(int k=0;k<4;k++)
+            {
+                if(isSafe(NextRow[k]+currRow,NextCol[k]+currCol,m,n)&&Matrix[NextRow[k]+currRow]                            [NextCol[k]+currCol]==1)
+                {
+                    
+                 if(Merge(make_pair(currRow,currCol),make_pair(NextRow[k]+currRow,NextCol[k]+currCol),Parent))
+                    count--;
+                }
+            }
+            
+            
+            res.push_back(count);
+ 
+        }
+        
+    return res;
+        
+    }
+};

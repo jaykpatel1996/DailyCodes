@@ -1,0 +1,106 @@
+/*
+// Sample code to perform I/O:
+
+cin >> name;                            // Reading input from STDIN
+cout << "Hi, " << name << ".\n";        // Writing output to STDOUT
+
+// Warning: Printing unwanted or ill-formatted data to output will cause the test cases to fail
+*/
+
+// Write your code here
+
+//https://www.hackerearth.com/practice/algorithms/graphs/depth-first-search/practice-problems/algorithm/matts-graph-book/
+
+#include<stdio.h>
+#include<iostream>
+#include<vector>
+#include<list>
+
+using namespace std;
+
+
+class Graph
+{
+    list<int> *adj;
+    int n;
+    public:
+    Graph(int N)
+    {
+        adj = new list<int>[N];
+        n = N;
+    }
+    void addEdge(int u,int v)
+    {
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    void IsTraversableEverythingUtil(int source,vector<bool> &visited,int NoEntry)
+    {
+        
+        if(source!=NoEntry)
+            visited[source]=true;
+        else 
+        return;
+            
+        for(auto i = adj[source].begin();i!=adj[source].end();i++)
+        {
+            if(!visited[*i])
+                IsTraversableEverythingUtil(*i,visited,NoEntry);
+        }
+    }
+    
+    bool IsTraversable(int removed)
+    {
+        vector<bool> IsVisited(n,false);
+        IsVisited[removed]=true;
+        if(n==1)
+        return false;
+        if(removed==0)
+        IsTraversableEverythingUtil(1,IsVisited,removed);
+        else
+        IsTraversableEverythingUtil(0,IsVisited,removed);
+
+
+                
+        for(int i=0;i<n;i++)
+        {
+            if(IsVisited[i]==false)
+            return false;
+        }
+        return true;
+    }
+    
+    
+    
+};
+
+
+int main()
+{
+    int N;
+    cin>>N;
+    Graph G(N);
+    int edges;
+    cin>>edges;
+    while(edges--)
+    {
+        int temp1,temp2;
+        cin>>temp1>>temp2;
+        G.addEdge(temp1,temp2);
+    }
+    int removed;
+    cin>>removed;
+    
+    bool result;
+    result = G.IsTraversable(removed);
+    if(result==true)
+    {
+        cout<<"Connected";
+    }
+    else 
+    cout<<"Not Connected";
+    
+    return 0;
+} 
+
+

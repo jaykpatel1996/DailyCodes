@@ -1,0 +1,83 @@
+class Solution {
+public:
+    
+    list<int>* CreateGraph(int n,vector<vector<int>>& prerequisites)
+    {
+        list<int> *adj = new list<int>[n];
+        for(int i=0;i<prerequisites.size();i++)
+        {
+            adj[prerequisites[i][0]].push_back(prerequisites[i][1]);
+        }
+        return adj;
+    }
+    
+   
+    
+    void ComputeStartVertices(vector<vector<int>>& prerequisites,vector<int> &InDegree)
+    {
+     
+      for(int i=0;i<prerequisites.size();i++)
+      {
+          InDegree[prerequisites[i][1]]++;
+      }
+    }
+    
+    int ComputeNumberOfVertices(vector<vector<int>>& prerequisites)
+    {
+        map<int,bool> m;
+    for(int i=0;i<prerequisites.size();i++)
+      {
+          if(m.find(prerequisites[i][0])==m.end())
+              m[prerequisites[i][0]]=true;
+          if(m.find(prerequisites[i][1])==m.end())
+              m[prerequisites[i][1]]=true;   
+      }
+        return m.size();
+    }
+    
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) 
+    {
+        if(prerequisites.size()==0)
+            return true;
+        
+        vector<int> InDegree(numCourses,0);
+        int count=0;
+        
+        list<int> *adj = CreateGraph(numCourses,prerequisites);
+        
+        
+        ComputeStartVertices(prerequisites,InDegree);
+        int n= ComputeNumberOfVertices(prerequisites);
+
+        queue<int> Q;
+        
+        for(int i=0;i<numCourses;i++)
+        {
+            if(InDegree[i]==0)
+                {Q.push(i);}
+        }
+        
+        
+        while(!Q.empty())
+        {
+            int source=Q.front();
+            Q.pop();
+         
+             
+        for (auto itr = adj[source].begin(); itr != adj[source].end(); itr++) 
+        {
+           
+            if (--InDegree[*itr] == 0) 
+                Q.push(*itr); 
+            
+        }
+        count++;
+        
+        }
+                
+        if(count!=numCourses)
+            return false;
+        else 
+            return true;
+    }
+};

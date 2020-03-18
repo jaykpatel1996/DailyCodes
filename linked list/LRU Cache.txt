@@ -1,0 +1,61 @@
+//https://leetcode.com/problems/lru-cache
+
+class LRUCache {
+public:
+    
+    list<int> queue;
+    int m_capacity;
+    int curr_capacity;
+    unordered_map<int,pair< int, list<int>::iterator >> m;
+    LRUCache(int capacity) 
+    {
+        m_capacity=capacity;
+        curr_capacity = 0;
+    }
+    
+    int get(int key) {
+        int res;    
+        if(m.find(key)!=m.end())
+            res = m[key].first;
+        else
+        {   
+            return -1;
+        }
+        
+        queue.push_front(key);
+        queue.erase(m[key].second);
+        m[key].second = queue.begin();
+        return res;
+    }
+    
+    void put(int key, int value) 
+    {
+        
+        if(m.find(key)!=m.end())
+        {
+            queue.push_front(key);
+            queue.erase(m[key].second);
+            m[key].first = value;
+            m[key].second = queue.begin();
+            return;
+        }
+        
+        if(curr_capacity<m_capacity)
+        {
+            curr_capacity++;
+            queue.push_front(key);
+            m[key]=make_pair(value,queue.begin());
+            return;
+        }
+        
+        int elementToBeDeleted = queue.back();
+        queue.pop_back();
+        m.erase(elementToBeDeleted);
+        
+        queue.push_front(key);
+        m[key]=make_pair(value,queue.begin());
+        
+        
+        
+    }
+};

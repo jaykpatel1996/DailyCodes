@@ -1,0 +1,58 @@
+//https://leetcode.com/problems/clone-graph/
+
+class Solution {
+public:
+    map<Node*, Node*> OriginalToClone;
+    
+    
+    void FillUpTheMap(Node* node,map<Node*,bool> &IsVisited)
+    {
+        if(node)
+        {
+            IsVisited[node]=true;       
+            Node *Temp = new Node(node->val);
+            OriginalToClone[node]=Temp;
+            for(auto itr=node->neighbors.begin();itr!=node->neighbors.end();itr++)
+            {
+                if(IsVisited.find(*itr)==IsVisited.end())
+                FillUpTheMap(*itr,IsVisited);
+            }
+        }
+
+    }
+    void CloneItNow(Node* node,map<Node*,bool> &IsVisited)
+    {
+        if(node)
+        {
+            IsVisited[node]=true;
+            Node* temp = OriginalToClone[node];
+            if(temp==NULL)
+            {
+                cout<<"hell";
+            }
+            for(auto itr=node->neighbors.begin();itr!=node->neighbors.end();itr++)
+            {
+                if(temp!=NULL)
+                temp->neighbors.push_back(OriginalToClone[(*itr)]);
+            }
+            
+            for(auto itr=node->neighbors.begin();itr!=node->neighbors.end();itr++)
+            {
+                if(IsVisited.find(*itr)==IsVisited.end())
+                CloneItNow(*itr,IsVisited);
+            }
+        }
+        
+        
+    }
+    
+    Node* cloneGraph(Node* node) 
+    {   
+        map<Node*,bool> IsVisited,IsVisited2;
+        FillUpTheMap(node,IsVisited);
+        CloneItNow(node,IsVisited2);
+        return OriginalToClone[node];
+        
+        
+    }
+};
