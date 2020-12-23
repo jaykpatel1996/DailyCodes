@@ -1,0 +1,73 @@
+//Input
+10 5
+abaabbxcvd
+3 1
+9 2
+9 3
+3 4
+1 5
+2 6
+9 7
+3 8
+9 10
+1 a
+2 b
+3 c
+4 a
+5 c
+Code 
+
+#include<bits/stdc++.h>
+using namespace std;
+
+map<int,vector<int> > res;
+string S;
+void mergeVector(vector<int> &localCounter, vector<int> b)
+{
+	for(int i=0;i<localCounter.size();i++)
+	localCounter[i]+=b[i];
+}
+
+vector<int> dfs(int source,vector<vector<int> > &adj)
+{
+	vector<int> localCounter(26);
+	localCounter[S[source-1]-97]=1;
+	for(int i=0;i<adj[source].size();i++)
+	{
+		mergeVector(localCounter,dfs(adj[source][i],adj));
+	}
+	res[source]=localCounter;
+	return localCounter;
+
+}
+
+int main()
+{
+	
+	int N, Q;
+	
+	cin >> N >> Q;
+	cin >> S;
+	vector<vector<int> > adj(S.length()+1);
+	for(int i = 0; i < N - 1; i++)
+	{
+		int u, v;
+		cin >> u >> v;
+		adj[u].push_back(v);
+	    // Process the Inputs of node details  
+	}
+	
+	dfs(1,adj);
+	while(Q --)
+	{
+		int u;
+		char c;
+		cin >> u >> c;
+		if(res.find(u)!=res.end())
+		cout<<res[u][c-97]<<"\n";
+        
+
+		// Process queries
+	}
+	return 0;
+}

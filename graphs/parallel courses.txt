@@ -1,0 +1,43 @@
+//https://leetcode.com/problems/parallel-courses/
+DFS method
+
+    int minimumSemesters(int N, vector<vector<int>>& relations)
+    {
+        vector<int> vDepth(N, 1), visitState(N, 0); // visite state  -1 :visiting;  0:not visit;  1:visited
+        vector<vector<int>> g(N);
+        for (auto& v : relations) g[v[0] - 1].push_back(v[1] - 1);
+        for (int i = 0; i < N; i++) if (!dfs(i, g, vDepth, visitState)) return -1;
+        return *max_element(vDepth.begin(), vDepth.end());
+    }
+
+    // return false if there is a circle
+    bool dfs(int i, const vector<vector<int>> & g, vector<int> & vDepth, vector<int> & visitState) {
+        if (visitState[i] == 1) return true;
+        if (visitState[i] == -1) return false; // circle  
+        visitState[i] = -1; //visiting
+        for (auto j : g[i]) {
+            if (!dfs(j, g, vDepth, visitState)) return false;
+            vDepth[i] = max(vDepth[i], 1 + vDepth[j]);
+        }
+        visitState[i] = 1; //visited;
+        return true;
+    }
+BFS method
+
+	int minimumSemesters(int N, vector<vector<int>>& relations) {
+        vector<int> indegree(N, 0);
+        vector<set<int>> g(N);
+        for (auto& v : relations) {
+            g[v[0] - 1].insert(v[1] - 1);
+            indegree[v[1] - 1]++;
+        }
+        int maxDepth = 0, numStudied = 0;
+        queue<pair<int, int>> q; // vertex, depth
+        for (int i = 0; i < N; i++) if (indegree[i] == 0) q.push({ i,1 });
+        for (; !q.empty(); numStudied++) {
+            auto [i, depth] = q.front(); q.pop();
+            maxDepth = depth;
+            for (auto j : g[i]) if (--indegree[j] == 0) q.push({ j, depth + 1 });
+        }
+        return numStudied == N ? maxDepth : -1;
+    }

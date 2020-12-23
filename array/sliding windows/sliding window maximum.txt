@@ -1,0 +1,32 @@
+//https://leetcode.com/problems/sliding-window-maximum/
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+     
+        
+        deque<int> indexDeque;
+        vector<int> res;
+        for(int i=0;i<k;i++)
+        {
+            while(!indexDeque.empty() && nums[indexDeque.back()]<nums[i])
+                indexDeque.pop_back();
+            indexDeque.push_back(i);
+        }
+        
+        for(int i=k;i<nums.size();i++)
+        {
+            res.push_back(nums[indexDeque.front()]);
+            
+            if(i-indexDeque.front()>=k)
+                indexDeque.pop_front();
+            while(!indexDeque.empty() && nums[indexDeque.back()]<nums[i])
+                indexDeque.pop_back();
+            indexDeque.push_back(i);
+        }
+        res.push_back(nums[indexDeque.front()]);
+        return res;
+        
+        
+        
+    }
+};

@@ -1,0 +1,56 @@
+//this code intends to find longest substring with same elements and K different elements - variation of this - https://leetcode.com/problems/max-consecutive-ones-iii/
+
+
+
+class Solution {
+public:
+    int longestOnes(vector<int>& A, int K) 
+    {
+        if(A.size()==0)
+            return 0;
+        int left=0;
+        int majorityCount = 0;
+        int minorityCount = 0;
+        int majorElement = A[0];
+        int local_k =0; 
+        int res=0;
+        for(int i=0;i<A.size();i++)
+        {
+            if(majorElement==A[i])
+                majorityCount++;
+            else
+            {
+                minorityCount++;
+                if(minorityCount>majorityCount)
+                {majorElement=A[i];swap(minorityCount,majorityCount);}
+            }
+            
+            while(minorityCount>K && i>=left)
+            {
+            if(majorElement==A[left])
+            {
+                majorityCount--;
+                if(minorityCount>majorityCount)
+                {majorElement=A[left];swap(minorityCount,majorityCount);}
+            }
+            else
+            {
+                minorityCount--;
+            }
+            left++; 
+            }
+            
+            cout<<left<<" ";
+            res=max(res,i-left+1);
+            
+            
+            
+            
+        }
+            
+        return res;
+            
+            
+            
+        }
+};

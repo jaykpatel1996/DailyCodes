@@ -1,0 +1,28 @@
+//https://leetcode.com/problems/subarray-sum-equals-k
+
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) 
+    {
+        vector<int> CumulativeSum(nums.size(),0);
+        CumulativeSum[0]=nums[0];
+        for(int i=1;i<nums.size();i++)
+        {
+            CumulativeSum[i]=CumulativeSum[i-1]+nums[i];
+        }
+        
+        int count=0,CurrSubArraySum=0;
+        for(int i=0;i<nums.size();i++)
+        {
+            if(CumulativeSum[i]==k)
+                count++;
+            for(int j=0;j<i;j++)
+            {
+                CurrSubArraySum=CumulativeSum[i]-CumulativeSum[j];
+                if(CurrSubArraySum==k)
+                    count++;
+            }
+        }
+        return count;
+    }
+};

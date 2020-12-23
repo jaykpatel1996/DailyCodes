@@ -1,0 +1,81 @@
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* left;
+    Node* right;
+
+    Node() {}
+
+    Node(int _val) {
+        val = _val;
+        left = NULL;
+        right = NULL;
+    }
+
+    Node(int _val, Node* _left, Node* _right) {
+        val = _val;
+        left = _left;
+        right = _right;
+    }
+};
+*/
+
+class Solution {
+public:
+    
+    Node* nullNode;
+    Solution()
+    {
+        nullNode=NULL;
+    }
+    pair<Node*,Node*> treeToDoubleList(Node* root)
+    {
+        if(root)
+        {
+            pair<Node*,Node*> leftList=treeToDoubleList(root->left);
+            pair<Node*,Node*> res;
+            if(leftList.second)
+            {
+                leftList.second->right=root;
+                root->left=leftList.second;
+                res.first=leftList.first;
+            }
+            else
+            {
+                res.first=root;
+            }
+            
+            pair<Node*,Node*> rightList = treeToDoubleList(root->right);
+            if(rightList.second)
+            {
+                
+                res.second=rightList.second;
+                rightList.first->left=root;
+            }
+            else
+                res.second=root;
+            root->right=rightList.first;
+            return res;
+        }
+        return make_pair(nullNode,nullNode);
+    }
+    void printTheList(Node* head)
+    {
+        int count=3;
+        while(head && count)
+        {cout<<head->val;head=head->left;count--;}
+    }
+    Node* treeToDoublyList(Node* root) {
+                                                              
+        pair<Node*,Node* > res = treeToDoubleList(root);
+        if(res.first && res.second)
+        {
+            res.first->left=res.second;
+            res.second->right=res.first;
+        }
+        printTheList(res.first);
+    return res.first;
+        }
+};

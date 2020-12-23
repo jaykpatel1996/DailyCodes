@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) 
+    {
+        unordered_map<int,int> CumulativeSum;
+        CumulativeSum[0]=1;
+        int count=0,CurrSubArraySum=0;
+        
+        for(int i=0;i<nums.size();i++)
+        {
+            CurrSubArraySum+=nums[i];
+            if(CumulativeSum.find(CurrSubArraySum-k)!=CumulativeSum.end())
+                count=count + CumulativeSum[CurrSubArraySum-k];
+            
+            if(CumulativeSum.find(CurrSubArraySum)==CumulativeSum.end())
+                CumulativeSum[CurrSubArraySum]=1;
+            else
+                CumulativeSum[CurrSubArraySum]++;
+            
+
+            
+        }
+        return count;
+    }
+};

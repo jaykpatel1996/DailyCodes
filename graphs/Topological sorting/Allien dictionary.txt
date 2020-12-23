@@ -1,0 +1,117 @@
+class Solution {
+public:
+    vector<int> computeStartVertices(vector<vector<int> > &adj,set<int> &nodes)
+    {
+        
+        vector<int> inorderDegree(26,0);
+        for(int i=0;i<26;i++)
+        {
+            for(int j=0;j<adj[i].size();j++)
+                inorderDegree[adj[i][j]]++;
+        }
+        vector<int> res;
+        for(int i=0;i<26;i++)
+            if(inorderDegree[i]==0 && nodes.find(i)!=nodes.end())
+                res.push_back(i);
+        
+        return res;
+        
+        
+    }
+
+    void dfs(int source, vector<vector<int> > &adj, vector<int> &isVisited, stack<int> &S,bool &flag)
+    {
+        if(flag)
+            return;
+        if(isVisited[source]==1)
+        {
+            flag=true;
+            return;
+        }
+        if(isVisited[source]==2)
+        {return;}
+        
+        isVisited[source]=1;
+        for(int i=0;i<adj[source].size();i++)
+        {
+            dfs(adj[source][i],adj,isVisited,S,flag);
+        }
+        
+        S.push(source);
+        isVisited[source]=2;
+        
+        
+        
+        
+    }
+    
+    
+    string topologicalSort(vector<vector<int> > &adj,vector<int> &isVisited,set<int> &nodes,int source)
+    {
+        
+        stack<int> s;
+        bool flag=false;
+        vector<int> startVertices = computeStartVertices(adj,nodes);
+        if(source!=INT_MAX)
+        startVertices.push_back(source);
+        for(int i=0;i<startVertices.size();i++)
+        {
+           dfs(startVertices[i],adj,isVisited,s,flag);
+        }
+        if(flag)
+            return "";
+        string res;
+        while(!s.empty())
+        {res.push_back(s.top()+97);s.pop();}
+        
+        return res;
+        
+        
+    }
+    void insertNode(string s, set<int> &nodes)
+    {
+        for(int i=0;i<s.length();i++)
+            nodes.insert(s[i]-97);
+    }
+    string alienOrder(vector<string>& words) {
+        
+        vector<vector<int> > adj(26);
+        set<int> nodes;
+        int source=INT_MAX;
+        bool isSourceFound=false;
+        if(words.size()==0)
+            return "";
+       // computing the relations from given list of words
+        for(int i=0;i<words.size()-1;i++)
+        {
+            insertNode(words[i],nodes);
+            string word1=words[i];
+            string word2=words[i+1];
+            
+            
+            if(word1.length()>word2.length() &&            mismatch(word2.begin(),word2.end(),word1.begin(),word1.end()).first==word2.end())
+                return "";
+            for(int j=0;j<min(word1.length(),word2.length());j++)
+            {
+                if(word1[j]!=word2[j])
+                {
+                    if(!isSourceFound)
+                    {
+                        isSourceFound=true;
+                        source=word1[j]-97;
+                    }
+                    adj[word1[j]-97].push_back(word2[j]-97);break;}
+            }
+        }
+        
+        
+            
+        
+        insertNode(words[words.size()-1],nodes);
+        vector<int> isVisited(26,0); // 0 being not visited, 1 being still in process, 2 being done visiting
+        return topologicalSort(adj,isVisited,nodes,source);
+        
+       
+        
+    }
+};

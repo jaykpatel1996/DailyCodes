@@ -1,0 +1,71 @@
+//https://leetcode.com/problems/car-pooling
+//similar to number of platforms question
+
+class trip
+{
+    public:
+    int time;
+    bool IsStart;
+    int passenger;
+    trip(int s=0,int p=0,bool b=false)
+    {
+        time=s;
+        passenger=p;
+        IsStart = b;
+    }
+};
+
+struct Custom
+{
+    bool operator()(const trip &first,const trip &second)
+    {
+        if(first.time<second.time)
+        {
+            return true;
+        }
+       else if(first.time==second.time)
+        {
+        if(first.IsStart==false && second.IsStart==true)
+                return true;
+        else 
+               return false;
+       }
+        else return false;
+    }
+};
+
+    
+class Solution {
+public:
+    bool carPooling(vector<vector<int>>& trips, int capacity) 
+    {
+            vector<trip> TripVec;
+            for(int i=0;i<trips.size();i++)
+            {
+                trip t(trips[i][1],trips[i][0],true);
+                TripVec.push_back(t);
+                trip s(trips[i][2],trips[i][0],false);
+                TripVec.push_back(s);
+                
+            }
+        sort(TripVec.begin(),TripVec.end(),Custom());
+        
+        int maxPassenger=0;
+        for(int i=0;i<TripVec.size();i++)
+        {
+            if(TripVec[i].IsStart)
+            {
+                maxPassenger+=TripVec[i].passenger;
+            }
+            else
+                maxPassenger-=TripVec[i].passenger;
+            
+            if(maxPassenger>capacity)
+                return false;
+        }
+        return true;
+        
+        
+        
+    }
+};

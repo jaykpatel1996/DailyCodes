@@ -1,0 +1,55 @@
+//https://leetcode.com/problems/minimum-window-substring/
+class Solution {
+public:
+    
+    bool isContained(int *s, int* t)
+    {
+        for(int i=0;i<256;i++)
+        {
+            if(s[i]<t[i])
+                return false;
+        }
+        return true;
+    }
+    
+    string minWindow(string s, string t) {
+        
+        int sMap[256]={0};
+        int tMap[256]={0};
+        
+        int left=0,leftRes=0,rightRes=-1,res=INT_MAX;
+        
+        //if(s.length()<t.length())
+         //   return "";
+        
+        for(auto element:t)
+        {
+            tMap[element]++;
+        }
+        int flag;
+        for(int i=0;i<s.length();i++)
+        {
+            sMap[s[i]]++;
+            flag=0;
+            if(isContained(sMap,tMap))
+            {
+                while(sMap[s[left]]>tMap[s[left]])  
+                sMap[s[left++]]--;
+                flag=1;
+            }
+            if(flag==1)
+            if(res>i-(left)+1)
+            {
+               leftRes=left,rightRes=i,res=i-(left)+1; 
+            }
+            
+            
+        }
+        
+        cout<<leftRes<<" "<<rightRes<<"\n";
+        
+        return s.substr(leftRes,(rightRes-leftRes+1));
+        
+        
+    }
+};
